@@ -19,7 +19,8 @@ class Wrapper
         $this->connection = $connection;
     }
 
-    public static function build($baseUri, $username, $password) {
+    public static function build($baseUri, $username, $password): Wrapper
+    {
 
         $connection = new Connection($baseUri, $username, $password);
         return new Wrapper($connection);
@@ -28,7 +29,8 @@ class Wrapper
     /**
      * @return Connection
      */
-    public function getConnection() {
+    public function getConnection(): Connection
+    {
 
         return $this->connection;
     }
@@ -36,7 +38,8 @@ class Wrapper
     /**
      * @return AppsClient
      */
-    public function getAppsClient() {
+    public function getAppsClient(): AppsClient
+    {
 
         return $this->getClient(AppsClient::class);
     }
@@ -44,7 +47,8 @@ class Wrapper
     /**
      * @return FederatedCloudSharesClient
      */
-    public function getFederatedCloudSharesClient() {
+    public function getFederatedCloudSharesClient(): FederatedCloudSharesClient
+    {
 
         return $this->getClient(FederatedCloudSharesClient::class);
     }
@@ -52,7 +56,8 @@ class Wrapper
     /**
      * @return GroupsClient
      */
-    public function getGroupsClient() {
+    public function getGroupsClient(): GroupsClient
+    {
 
         return $this->getClient(GroupsClient::class);
     }
@@ -60,7 +65,8 @@ class Wrapper
     /**
      * @return SharesClient
      */
-    public function getSharesClient() {
+    public function getSharesClient(): SharesClient
+    {
 
         return $this->getClient(SharesClient::class);
     }
@@ -68,7 +74,8 @@ class Wrapper
     /**
      * @return UsersClient
      */
-    public function getUsersClient() {
+    public function getUsersClient(): UsersClient
+    {
 
         return $this->getClient(UsersClient::class);
     }
@@ -77,7 +84,8 @@ class Wrapper
      * @param $class
      * @return mixed
      */
-    protected function getClient($class) {
+    protected function getClient($class): mixed
+    {
 
         if(!isset($this->clients[$class]))
             $this->clients[$class] = new $class($this->connection);

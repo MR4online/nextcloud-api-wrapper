@@ -4,7 +4,6 @@
     "keywords": ["nextcloud", "api", "wrapper"],
     "type": "library",
     "license": "MIT",
-    "version": "1.0.0",
     "authors": [
         {
             "name": "MR4online",

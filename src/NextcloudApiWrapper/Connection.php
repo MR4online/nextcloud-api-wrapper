@@ -53,6 +53,8 @@ class Connection
      * @param $path
      * @param array $params
      * @return NextcloudResponse
+     * @throws NCException
+     * @throws GuzzleException
      */
     public function pushDataRequest($verb, $path, array $params = []): NextcloudResponse
     {
@@ -70,6 +72,8 @@ class Connection
      * @param $path
      * @param array $formParams
      * @return NextcloudResponse
+     * @throws NCException
+     * @throws GuzzleException
      */
     public function submitRequest($verb, $path, array $formParams): NextcloudResponse
     {

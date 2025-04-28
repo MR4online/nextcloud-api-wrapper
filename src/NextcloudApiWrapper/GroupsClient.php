@@ -2,17 +2,21 @@
 
 namespace NextcloudApiWrapper;
 
+use GuzzleHttp\Exception\GuzzleException;
+
 class GroupsClient extends AbstractClient
 {
-    const   GROUP_PART   = 'v1.php/cloud/groups';
+    const string GROUP_PART   = 'v1.php/cloud/groups';
 
     /**
      * Search for groups
-     * @param $search
+     * @param string $search
      * @return NextcloudResponse
+     * @throws NCException
+     * @throws GuzzleException
      */
-    public function searchGroups($search = '') {
-
+    public function searchGroups(string $search = ''): NextcloudResponse
+    {
         return $this->connection->request(Connection::GET, self::GROUP_PART . $this->buildUriParams([
                 'search'    => $search
             ]));
@@ -20,43 +24,51 @@ class GroupsClient extends AbstractClient
 
     /**
      * Creates a new group
-     * @param $groupname
+     * @param string $groupName
      * @return NextcloudResponse
+     * @throws NCException
+     * @throws GuzzleException
      */
-    public function createGroup($groupname) {
-
+    public function createGroup(string $groupName): NextcloudResponse
+    {
         return $this->connection->submitRequest(Connection::POST, self::GROUP_PART, [
-            'groupid'   => $groupname
+            'groupid'   => $groupName
         ]);
     }
 
     /**
      * Return a group's members
-     * @param $groupname
+     * @param string $groupName
      * @return NextcloudResponse
+     * @throws GuzzleException
+     * @throws NCException
      */
-    public function getGroupUsers($groupname) {
-
-        return $this->connection->request(Connection::GET, self::GROUP_PART . '/' . $groupname);
+    public function getGroupUsers(string $groupName): NextcloudResponse
+    {
+        return $this->connection->request(Connection::GET, self::GROUP_PART . '/' . $groupName);
     }
 
     /**
-     * Returna group's subadmins
-     * @param $groupname
+     * Returna group's sub-admins
+     * @param string $groupName
      * @return NextcloudResponse
+     * @throws GuzzleException
+     * @throws NCException
      */
-    public function getGroupSubadmins($groupname) {
-
-        return $this->connection->request(Connection::GET, self::GROUP_PART . '/' . $groupname . '/subadmins');
+    public function getGroupSubAdmins(string $groupName): NextcloudResponse
+    {
+        return $this->connection->request(Connection::GET, self::GROUP_PART . '/' . $groupName . '/subadmins');
     }
 
     /**
      * Deletes a group
-     * @param $groupname
+     * @param string $groupName
      * @return NextcloudResponse
+     * @throws GuzzleException
+     * @throws NCException
      */
-    public function deleteGroup($groupname) {
-
-        return $this->connection->request(Connection::DELETE, self::GROUP_PART . '/' . $groupname);
+    public function deleteGroup(string $groupName): NextcloudResponse
+    {
+        return $this->connection->request(Connection::DELETE, self::GROUP_PART . '/' . $groupName);
     }
 }

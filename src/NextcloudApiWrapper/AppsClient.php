@@ -2,6 +2,8 @@
 
 namespace NextcloudApiWrapper;
 
+use GuzzleHttp\Exception\GuzzleException;
+
 class AppsClient extends AbstractClient
 {
     const string APP_PART  = 'v1.php/cloud/apps';
@@ -10,6 +12,8 @@ class AppsClient extends AbstractClient
      * Gets a list of apps
      * @param null $filter can be either 'enabled' or 'disabled' to filter apps
      * @return NextcloudResponse
+     * @throws NCException
+     * @throws GuzzleException
      */
     public function getApps($filter = null): NextcloudResponse
     {
@@ -22,6 +26,8 @@ class AppsClient extends AbstractClient
      * Returns infos for an app
      * @param string $appName
      * @return NextcloudResponse
+     * @throws NCException
+     * @throws GuzzleException
      */
     public function getAppInfo(string $appName): NextcloudResponse
     {
@@ -32,6 +38,8 @@ class AppsClient extends AbstractClient
      * Enables an app
      * @param string $appName
      * @return NextcloudResponse
+     * @throws NCException
+     * @throws GuzzleException
      */
     public function enableApp(string $appName): NextcloudResponse
     {
@@ -42,6 +50,8 @@ class AppsClient extends AbstractClient
      * Disables an app
      * @param string $appName
      * @return NextcloudResponse
+     * @throws NCException
+     * @throws GuzzleException
      */
     public function disableApp(string $appName): NextcloudResponse
     {

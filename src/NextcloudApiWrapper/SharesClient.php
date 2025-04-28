@@ -2,29 +2,34 @@
 
 namespace NextcloudApiWrapper;
 
+use GuzzleHttp\Exception\GuzzleException;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class SharesClient extends AbstractClient
 {
-    const SHARE_PART    = 'v2.php/apps/files_sharing/api/v1/shares';
+    const string SHARE_PART    = 'v2.php/apps/files_sharing/api/v1/shares';
 
     /**
      * Get all shares from the user
      * @return NextcloudResponse
+     * @throws NCException
+     * @throws GuzzleException
      */
-    public function getAllShares() {
-
+    public function getAllShares(): NextcloudResponse
+    {
         return $this->connection->request(Connection::GET, self::SHARE_PART);
     }
 
     /**
      * Get all shares from a given file/folder
-     * @param $path
-     * @param array $params, can have keys 'reshares' (bool), 'subfiles' (bool)
+     * @param string $path
+     * @param array $params , can have keys 'reshares' (bool), 'subfiles' (bool)
      * @return NextcloudResponse
+     * @throws GuzzleException
+     * @throws NCException
      */
-    public function getSharesFromFileOrFolder($path, array $params) {
-
+    public function getSharesFromFileOrFolder(string $path, array $params): NextcloudResponse
+    {
         $params = $this->resolve($params, function(OptionsResolver $resolver) {
             $resolver->setDefaults([
                 'reshares',
@@ -39,21 +44,25 @@ class SharesClient extends AbstractClient
 
     /**
      * Get information about a given share
-     * @param $shareid
+     * @param string $shareId
      * @return NextcloudResponse
+     * @throws GuzzleException
+     * @throws NCException
      */
-    public function getShareInformation($shareid) {
-
-        return $this->connection->request(Connection::GET, self::SHARE_PART . '/' . $shareid);
+    public function getShareInformation(string $shareId): NextcloudResponse
+    {
+        return $this->connection->request(Connection::GET, self::SHARE_PART . '/' . $shareId);
     }
 
     /**
-     * Share a file/folder with a user/group or as public link
+     * Share a file/folder with a user/group or as a public link
      * @param array $params
      * @return NextcloudResponse
+     * @throws NCException
+     * @throws GuzzleException
      */
-    public function createShare(array $params) {
-
+    public function createShare(array $params): NextcloudResponse
+    {
         $params = $this->resolve($params, function(OptionsResolver $resolver) {
             $resolver->setRequired([
                 'path',
@@ -71,26 +80,30 @@ class SharesClient extends AbstractClient
 
     /**
      * Remove the given share
-     * @param $shareid
+     * @param string $shareId
      * @return NextcloudResponse
+     * @throws GuzzleException
+     * @throws NCException
      */
-    public function deleteShare($shareid) {
-
-        return $this->connection->request(Connection::DELETE, self::SHARE_PART . '/' . $shareid);
+    public function deleteShare(string $shareId): NextcloudResponse
+    {
+        return $this->connection->request(Connection::DELETE, self::SHARE_PART . '/' . $shareId);
     }
 
     /**
      * Update a given share. Only one value can be updated per request
-     * @param $shareid
-     * @param $key
+     * @param string $shareId
+     * @param string $key
      * @param $value
      * @return NextcloudResponse
+     * @throws GuzzleException
+     * @throws NCException
      */
-    public function updateShare($shareid, $key, $value) {
-
+    public function updateShare(string $shareId, string $key, $value): NextcloudResponse
+    {
         $this->inArray($key, ['permissions', 'password', 'publicUpload', 'expireDate']);
 
-        return $this->connection->pushDataRequest(Connection::PUT, self::SHARE_PART . '/' . $shareid, [
+        return $this->connection->pushDataRequest(Connection::PUT, self::SHARE_PART . '/' . $shareId, [
             $key => $value
         ]);
     }

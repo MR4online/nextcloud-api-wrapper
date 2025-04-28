@@ -1,5 +1,7 @@
 # Nextcloud API wrapper for PHP
 
+> ⚠️ **IMPORTANT**: this is a fork of: https://github.com/ovesco/nextcloud-api-wrapper with the goal to keep dependencies and code updated. Some code may change ;-) Testing with PHP8.4 & Nextcloud 31+ WIP
+
 This is a simple php wrapper around
 - [user provisioning api](https://docs.nextcloud.com/server/12/admin_manual/configuration_user/user_provisioning_api.html)
 - [shares api](https://docs.nextcloud.com/server/12/developer_manual/core/ocs-share-api.html)
@@ -14,8 +16,8 @@ remaining methods. If you find any bug, don't hesitate to open an issue.
 
 ##### Warning
 > Nextcloud API uses basic http auth, which means username and password
-are not encoded and travel the internet as clearly as possible. Make sure
-to enforce it using SSL.
+> are not encoded and travel the internet as clearly as possible. Make sure
+> to enforce it using SSL.
 
 ## Installation
 Install it with composer
