@@ -1,13 +1,14 @@
 {
-    "name": "sysmoh/nextcloud-api-wrapper",
+    "name": "mr4online/nextcloud-api-wrapper",
     "description": "A simple wrapper around nextcloud user provisioning api",
     "keywords": ["nextcloud", "api", "wrapper"],
     "type": "library",
     "license": "MIT",
+    "version": "1.0.0",
     "authors": [
         {
-            "name": "sysmoh",
-            "email": "guillaume.hochet@gmail.com"
+            "name": "MR4online",
+            "email": "7498992+MR4online@users.noreply.github.com"
         }
     ],
     "require": {
