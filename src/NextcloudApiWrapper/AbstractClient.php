@@ -10,7 +10,7 @@ abstract class AbstractClient
     /**
      * @var Connection
      */
-    protected $connection;
+    protected Connection $connection;
 
     public function __construct(Connection $connection)
     {
@@ -22,21 +22,21 @@ abstract class AbstractClient
      * @param \Closure $function
      * @return array
      */
-    public function resolve(array $params, $function) {
-
-        $resolver   = new OptionsResolver();
+    public function resolve(array $params, \Closure $function): array
+    {
+        $resolver = new OptionsResolver();
         $function($resolver);
         return $resolver->resolve($params);
     }
 
     /**
-     * Checks if given key is in array, throws an exception otherwise
+     * Checks if the given key is in an array, throws an exception otherwise
      * @param $key
      * @param array $options
      */
-    public function inArray($key, array $options) {
-
-        if(!in_array($key, $options))
+    public function inArray($key, array $options): void
+    {
+        if (!in_array($key, $options))
             throw new InvalidOptionsException("The key $key was not one of the following: " . implode(', ', $options));
     }
 
@@ -45,8 +45,8 @@ abstract class AbstractClient
      * @param array $params
      * @return string
      */
-    public function buildUriParams(array $params = []) {
-
+    public function buildUriParams(array $params = []): string
+    {
         return empty($params) ? '' : '?' . http_build_query($params);
     }
 }

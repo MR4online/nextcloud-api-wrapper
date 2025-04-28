@@ -11,8 +11,10 @@
         }
     ],
     "require": {
-        "guzzlehttp/guzzle": "^6.3",
-        "symfony/options-resolver": "^3.4"
+        "php": ">=8.4",
+        "guzzlehttp/guzzle": "^7.9.3",
+        "symfony/options-resolver": "^v7.2.0",
+        "ext-simplexml": "*"
     },
     "autoload": {
         "psr-4": {"NextcloudApiWrapper\\": "src/NextcloudApiWrapper"}

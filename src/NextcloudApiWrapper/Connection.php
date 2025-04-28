@@ -2,37 +2,27 @@
 
 namespace NextcloudApiWrapper;
 
+use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\RequestOptions;
 use GuzzleHttp\Client;
 
 class Connection
 {
-    const GET           = 'GET';
-    const POST          = 'POST';
-    const PUT           = 'PUT';
-    const DELETE        = 'DELETE';
+    const string GET    = 'GET';
+    const string POST   = 'POST';
+    const string PUT    = 'PUT';
+    const string DELETE = 'DELETE';
+
+    protected Client $guzzle;
+    protected string $username;
+    protected string $password;
 
     /**
-     * @var Client
-     */
-    protected $guzzle;
-
-    /**
-     * @var string
-     */
-    protected $username;
-
-    /**
-     * @var string
-     */
-    protected $password;
-
-    /**
-     * @param string $basePath  The base path to nextcloud api, IE. 'http://nextcloud.mydomain.com/ocs/'
+     * @param string $basePath  The base path to the nextcloud api, IE. 'http://nextcloud.mydomain.com/ocs/'
      * @param string $username  The username of the user performing api calls
      * @param string $password  The password of the user performing api calls
      */
-    public function __construct($basePath, $username, $password)
+    public function __construct(string $basePath, string $username, string $password)
     {
         $this->guzzle   = new Client(['base_uri' => $basePath]);
         $this->username = $username;
@@ -41,12 +31,15 @@ class Connection
 
     /**
      * Performs a simple request
-     * @param $verb
-     * @param $path
-     * @param null $params
+     * @param string $verb
+     * @param string $path
+     * @param null|array $params
      * @return NextcloudResponse
+     * @throws GuzzleException
+     * @throws NCException
      */
-    public function request($verb, $path, $params = null) {
+    public function request(string $verb, string $path, ?array $params = null): NextcloudResponse
+    {
 
         $params     = $params === null ? $this->getBaseRequestParams() : $params;
         $response   = $this->guzzle->request($verb, $path, $params);
@@ -61,7 +54,8 @@ class Connection
      * @param array $params
      * @return NextcloudResponse
      */
-    public function pushDataRequest($verb, $path, array $params = []) {
+    public function pushDataRequest($verb, $path, array $params = []): NextcloudResponse
+    {
 
         $params = empty($params) ? $this->getBaseRequestParams() : $params;
         $params['headers']['Content-Type'] = 'application/x-www-form-urlencoded';
@@ -77,7 +71,8 @@ class Connection
      * @param array $formParams
      * @return NextcloudResponse
      */
-    public function submitRequest($verb, $path, array $formParams) {
+    public function submitRequest($verb, $path, array $formParams): NextcloudResponse
+    {
 
         return $this->request($verb, $path, array_merge($this->getBaseRequestParams(), [
             RequestOptions::FORM_PARAMS => $formParams
@@ -89,7 +84,7 @@ class Connection
      * answer api calls
      * @return array
      */
-    protected function getBaseRequestParams() {
+    protected function getBaseRequestParams(): array {
 
         return [
             RequestOptions::HEADERS => [

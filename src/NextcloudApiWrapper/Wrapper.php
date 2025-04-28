@@ -7,7 +7,7 @@ class Wrapper
     /**
      * @var Connection
      */
-    protected $connection;
+    protected Connection $connection;
 
     /**
      * @var AbstractClient
