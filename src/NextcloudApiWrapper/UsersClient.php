@@ -7,22 +7,28 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class UsersClient extends AbstractClient
 {
-    const string USER_PART   = 'v1.php/cloud/users';
+    const string USER_PART        = 'v1.php/cloud/users';
+    const string USER_FIELDS_PART = 'v1.php/cloud/user/fields';
 
     /**
      * Adds a user.
-     * @param string $username
-     * @param string $password
+     * @param string $userName
+     * @param array $options
      * @return NextcloudResponse
-     * @throws NCException
      * @throws GuzzleException
+     * @throws NCException
      */
-    public function addUser(string $username, string $password): NextcloudResponse
+    public function addUser(string $userName, array $options): NextcloudResponse
     {
-        return $this->connection->submitRequest(Connection::POST, self::USER_PART, [
-            'userid'    => $username,
-            'password'  => $password
+        $resolver = new OptionsResolver();
+        $resolver->setDefaults([
+            'userid'    => $userName,
         ]);
+        $resolver->setRequired(['userid']);
+        $resolver->setDefined(['email', 'password' ,'displayName', 'quota', 'language']);
+        $params = $resolver->resolve($options);
+
+        return $this->connection->submitRequest(Connection::POST, self::USER_PART, $params);
     }
 
     /**
@@ -47,26 +53,26 @@ class UsersClient extends AbstractClient
 
     /**
      * Gets data about a given user
-     * @param string $username
+     * @param string $userName
      * @return NextcloudResponse
      * @throws GuzzleException
      * @throws NCException
      */
-    public function getUser(string $username): NextcloudResponse
+    public function getUser(string $userName): NextcloudResponse
     {
-        return $this->connection->request(Connection::GET, self::USER_PART . '/' . $username);
+        return $this->connection->request(Connection::GET, self::USER_PART . '/' . $userName);
     }
 
     /**
      * Updates a user, sets the value identified by key to value
-     * @param string $username
+     * @param string $userName
      * @param $key
      * @param $value
      * @return NextcloudResponse
      * @throws NCException
      * @throws GuzzleException
      */
-    public function editUser(string $username, $key, $value): NextcloudResponse
+    public function editUser(string $userName, $key, $value): NextcloudResponse
     {
         $this->inArray($key, [
             'email',
@@ -79,7 +85,7 @@ class UsersClient extends AbstractClient
             'password'
         ]);
 
-        return $this->connection->submitRequest(Connection::PUT, self::USER_PART . '/' . $username, [
+        return $this->connection->submitRequest(Connection::PUT, self::USER_PART . '/' . $userName, [
             'key'   => $key,
             'value' => $value
         ]);
@@ -87,134 +93,145 @@ class UsersClient extends AbstractClient
 
     /**
      * Disables a user
-     * @param $username
+     * @param string $userName
      * @return NextcloudResponse
      * @throws NCException
      * @throws GuzzleException
      */
-    public function disableUser($username): NextcloudResponse
+    public function disableUser(string $userName): NextcloudResponse
     {
-        return $this->connection->pushDataRequest(Connection::PUT, self::USER_PART . '/' . $username . '/disable');
+        return $this->connection->pushDataRequest(Connection::PUT, self::USER_PART . '/' . $userName . '/disable');
     }
 
     /**
      * Enables a user
-     * @param $username
+     * @param string $userName
      * @return NextcloudResponse
      * @throws NCException
      * @throws GuzzleException
      */
-    public function enableUser($username): NextcloudResponse
+    public function enableUser(string $userName): NextcloudResponse
     {
-        return $this->connection->pushDataRequest(Connection::PUT, self::USER_PART . '/' . $username . '/enable');
+        return $this->connection->pushDataRequest(Connection::PUT, self::USER_PART . '/' . $userName . '/enable');
     }
 
     /**
      * Deletes a user
-     * @param $username
+     * @param string $userName
      * @return NextcloudResponse
      * @throws NCException
      * @throws GuzzleException
      */
-    public function deleteUser($username): NextcloudResponse
+    public function deleteUser(string $userName): NextcloudResponse
     {
-        return $this->connection->request(Connection::DELETE, self::USER_PART . '/' . $username);
+        return $this->connection->request(Connection::DELETE, self::USER_PART . '/' . $userName);
     }
 
     /**
      * Returns user's groups
-     * @param $username
+     * @param string $userName
      * @return NextcloudResponse
      * @throws NCException
      * @throws GuzzleException
      */
-    public function getUserGroups($username): NextcloudResponse
+    public function getUserGroups(string $userName): NextcloudResponse
     {
-        return $this->connection->request(Connection::GET, self::USER_PART . '/' . $username . '/groups');
+        return $this->connection->request(Connection::GET, self::USER_PART . '/' . $userName . '/groups');
     }
 
     /**
      * Adds a user to a group
-     * @param $username
-     * @param $groupname
+     * @param string $userName
+     * @param string $groupName
      * @return NextcloudResponse
      * @throws NCException
      * @throws GuzzleException
      */
-    public function addUserToGroup($username, $groupname): NextcloudResponse
+    public function addUserToGroup(string $userName, string $groupName): NextcloudResponse
     {
-        return $this->connection->submitRequest(Connection::POST, self::USER_PART . '/' . $username . '/groups', [
-            'groupid'   => $groupname
+        return $this->connection->submitRequest(Connection::POST, self::USER_PART . '/' . $userName . '/groups', [
+            'groupid'   => $groupName
         ]);
     }
 
     /**
      * Removes a user from a group
-     * @param $username
-     * @param $groupname
+     * @param string $userName
+     * @param string $groupName
      * @return NextcloudResponse
      * @throws NCException
      * @throws GuzzleException
      */
-    public function removeUserFromGroup($username, $groupname): NextcloudResponse
+    public function removeUserFromGroup(string $userName, string $groupName): NextcloudResponse
     {
-        return $this->connection->submitRequest(Connection::DELETE, self::USER_PART . '/' . $username . '/groups', [
-            'groupid'   => $groupname
+        return $this->connection->submitRequest(Connection::DELETE, self::USER_PART . '/' . $userName . '/groups', [
+            'groupid'   => $groupName
         ]);
     }
 
     /**
      * Makes a user a sub-admin of a group
-     * @param $username
-     * @param $groupname
+     * @param string $userName
+     * @param string $groupName
      * @return NextcloudResponse
      * @throws NCException
      * @throws GuzzleException
      */
-    public function promoteUserSubAdminOfGroup($username, $groupname): NextcloudResponse
+    public function promoteUserSubAdminOfGroup(string $userName, string $groupName): NextcloudResponse
     {
-        return $this->connection->submitRequest(Connection::POST, self::USER_PART . '/' . $username . '/subadmins', [
-            'groupid'   => $groupname
+        return $this->connection->submitRequest(Connection::POST, self::USER_PART . '/' . $userName . '/subadmins', [
+            'groupid'   => $groupName
         ]);
     }
 
     /**
      * Demotes a user sub-admin group
-     * @param $username
-     * @param $groupname
+     * @param string $userName
+     * @param string $groupName
      * @return NextcloudResponse
      * @throws NCException
      * @throws GuzzleException
      */
-    public function demoteUserSubAdminOfGroup($username, $groupname): NextcloudResponse
+    public function demoteUserSubAdminOfGroup(string $userName, string $groupName): NextcloudResponse
     {
-        return $this->connection->submitRequest(Connection::DELETE, self::USER_PART . '/' . $username . '/subadmins', [
-            'groupid'   => $groupname
+        return $this->connection->submitRequest(Connection::DELETE, self::USER_PART . '/' . $userName . '/subadmins', [
+            'groupid'   => $groupName
         ]);
     }
 
     /**
      * Returns all groups in which this user is sub-admin
-     * @param $username
+     * @param string $userName
      * @return NextcloudResponse
      * @throws NCException
      * @throws GuzzleException
      */
-    public function getUserSubAdminGroups($username): NextcloudResponse
+    public function getUserSubAdminGroups(string $userName): NextcloudResponse
     {
-        return $this->connection->request(Connection::GET, self::USER_PART . '/' . $username . '/subadmins');
+        return $this->connection->request(Connection::GET, self::USER_PART . '/' . $userName . '/subadmins');
     }
 
     /**
      * Resend the welcome mail
-     * @param $username
+     * @param string $userName
      * @return NextcloudResponse
      * @throws NCException
      * @throws GuzzleException
      */
-    public function resendWelcomeEmail($username): NextcloudResponse
+    public function resendWelcomeEmail(string $userName): NextcloudResponse
     {
-        return $this->connection->request(Connection::POST, self::USER_PART . '/' . $username . '/welcome');
+        return $this->connection->request(Connection::POST, self::USER_PART . '/' . $userName . '/welcome');
+    }
+
+    /**
+     * Gets a list of editable user fields.
+     * @return NextcloudResponse
+     * @throws NCException
+     * @throws GuzzleException
+     */
+    public function getUserFields(): NextcloudResponse
+    {
+        return $this->connection->request(Connection::GET, self::USER_FIELDS_PART);
     }
 
 }
